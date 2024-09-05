@@ -13,7 +13,7 @@ export default function Landing() {
       return;
     }
     try {
-      const response = await axios.post('/api/messages', {
+      const response = await axios.post('http://locathost:3000/api/messages', {
         message,
         phoneNumber
       });

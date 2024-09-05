@@ -1,5 +1,7 @@
 const axios = require('axios');
 require('dotenv').config();
+const  User  = require('../models/User')
+const  Message  = require('../models/Message');
 
 exports.sendMessage = async (req, res) => {
   const { message, phoneNumber } = req.body;
@@ -9,7 +11,20 @@ exports.sendMessage = async (req, res) => {
     return res.status(400).json({ error: 'Message and phone number are required.' });
   }
 
+
   try {
+        user = new User ({
+            phoneNumber
+        })
+        await user.save();
+    
+
+    const newMessage = new Message({
+        sender:'system',
+        content:message,
+        user:user._id
+    })
+
     const response = await axios.post(
       `${process.env.WHATSAPP_API_URL}/${process.env.PHONE_NUMBER_ID}/messages`,
       {
@@ -24,6 +39,10 @@ exports.sendMessage = async (req, res) => {
         }
       }
     );
+
+    await newMessage.save();
+    user.messages.push(newMessage)
+    await user.save();
 
     res.status(200).json(response.data);
   } catch (error) {
