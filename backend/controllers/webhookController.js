@@ -4,7 +4,6 @@ const { User } = require('../models/User')
 exports.receiveMessage = async (req, res) => {
   const { entry } = req.body;
   try {
-    // Process message (this depends on WhatsApp API structure)
     entry.forEach(async (entryItem) => {
       const { changes } = entryItem;
       changes.forEach(async (change) => {
